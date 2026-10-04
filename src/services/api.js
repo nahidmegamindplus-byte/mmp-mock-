@@ -1,6 +1,7 @@
-// API Service wrapper
+// API Service wrapper with seamless server & offline / Vercel serverless fallback
+import { handleLocalApi } from './localBackend.js';
 
-const BASE_URL = '/api';
+const REMOTE_BASE_URL = import.meta.env?.VITE_API_URL || '/api';
 
 export function getToken() {
   return localStorage.getItem('mmp_token');
@@ -31,21 +32,51 @@ export async function apiRequest(endpoint, options = {}) {
     config.body = JSON.stringify(options.body);
   }
 
+  // 1. Try real server request first
   try {
-    const res = await fetch(`${BASE_URL}${endpoint}`, config);
-    const data = await res.json().catch(() => ({}));
+    const res = await fetch(`${REMOTE_BASE_URL}${endpoint}`, config);
 
-    if (!res.ok) {
-      const error = new Error(data.error || `Request failed with status ${res.status}`);
-      error.status = res.status;
-      error.data = data;
-      throw error;
+    // If server responds with JSON and not 404 HTML
+    const contentType = res.headers.get('content-type') || '';
+    if (contentType.includes('application/json')) {
+      const data = await res.json();
+      if (!res.ok) {
+        // If it's a real 401/400 from backend, throw error properly
+        if (res.status === 400 || res.status === 401 || res.status === 403) {
+          const error = new Error(data.error || `Request failed with status ${res.status}`);
+          error.status = res.status;
+          error.data = data;
+          throw error;
+        }
+        // If 404/500 on static hosting, trigger local backend fallback
+        if (res.status === 404 || res.status >= 500) {
+          console.warn(`[API Fallback] Server returned ${res.status}, switching to local engine: ${endpoint}`);
+          return await handleLocalApi(endpoint, options);
+        }
+      }
+      return data;
+    } else {
+      // Returned HTML (e.g. Vercel SPA rewrite fallback for /api)
+      console.info(`[API Fallback] Non-JSON response received from ${endpoint}, using built-in local engine.`);
+      return await handleLocalApi(endpoint, options);
+    }
+  } catch (err) {
+    // If it's an explicit validation/auth error from a working API or thrown from handler, propagate if appropriate
+    if (err.status === 401 && err.message === 'Invalid email or password') {
+      throw err;
+    }
+    if (err.status === 400 && err.message.includes('already exists')) {
+      throw err;
     }
 
-    return data;
-  } catch (err) {
-    console.error(`[API Error] ${endpoint}:`, err);
-    throw err;
+    // Network error or offline / Vercel environment without Node backend:
+    try {
+      console.info(`[API Fallback] Server unreachable (${err.message}). Handling via local engine: ${endpoint}`);
+      return await handleLocalApi(endpoint, options);
+    } catch (localErr) {
+      console.error(`[Local Backend Error] ${endpoint}:`, localErr);
+      throw localErr;
+    }
   }
 }
 
