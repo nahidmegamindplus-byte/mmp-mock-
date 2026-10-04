@@ -8,7 +8,6 @@ import {
   TrendingUp,
   Target,
   Award,
-  CheckCircle2,
   BookOpen,
   Headphones,
   PenTool,
@@ -16,11 +15,7 @@ import {
   ArrowRight,
   Clock,
   Sparkles,
-  BarChart2,
-  Calendar,
-  ChevronRight,
-  ShieldCheck,
-  RotateCcw
+  ChevronRight
 } from 'lucide-react';
 
 export default function StudentDashboard() {
@@ -34,7 +29,25 @@ export default function StudentDashboard() {
       try {
         setLoading(true);
         const data = await api.getStudentStats();
-        setStats(data);
+        setStats(data?.stats ? {
+          targetBand: user?.targetBand || user?.target_band || 7.5,
+          averageBand: data.stats.avg_overall || 0,
+          bestScore: data.stats.highest_band || 0,
+          latestScore: data.recent_attempts?.[0]?.overall_band || 0,
+          testsCompleted: data.stats.total_attempts || 0,
+          skillBands: {
+            listening: data.stats.avg_listening || 0,
+            reading: data.stats.avg_reading || 0,
+            writing: data.stats.avg_writing || 0,
+            speaking: data.stats.avg_speaking || 0
+          },
+          recentAttempts: data.recent_attempts || [],
+          trendData: (data.recent_attempts || []).map((att, idx) => ({
+            attemptIndex: idx + 1,
+            date: new Date(att.started_at || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
+            score: att.overall_band || 0
+          })).reverse()
+        } : data);
         setLoading(false);
       } catch (err) {
         console.error('Error loading dashboard stats:', err);
@@ -43,15 +56,15 @@ export default function StudentDashboard() {
     }
 
     loadStats();
-  }, []);
+  }, [user]);
 
   const studentName = user?.fullName || user?.full_name || 'Student';
   const targetBand = stats?.targetBand || user?.targetBand || user?.target_band || 7.5;
-  const averageBand = stats?.averageBand || 6.5;
-  const bestScore = stats?.bestScore || 7.0;
-  const latestScore = stats?.latestScore || 6.5;
   const testsCompleted = stats?.testsCompleted || 0;
-  const skillBands = stats?.skillBands || { listening: 7.0, reading: 6.5, writing: 6.0, speaking: 6.5 };
+  const averageBand = testsCompleted > 0 ? (stats?.averageBand || 0) : 0;
+  const bestScore = testsCompleted > 0 ? (stats?.bestScore || 0) : 0;
+  const latestScore = testsCompleted > 0 ? (stats?.latestScore || 0) : 0;
+  const skillBands = stats?.skillBands || { listening: 0, reading: 0, writing: 0, speaking: 0 };
   const recentAttempts = stats?.recentAttempts || [];
   const trendData = stats?.trendData || [];
 
@@ -108,10 +121,10 @@ export default function StudentDashboard() {
               Average Band
             </span>
             <div className="text-2xl font-black text-slate-900 font-display mt-1">
-              {averageBand.toFixed(1)}
+              {testsCompleted > 0 ? averageBand.toFixed(1) : '—'}
             </div>
-            <span className="text-[10px] text-emerald-600 font-medium mt-0.5 block">
-              {averageBand >= targetBand ? 'Target Achieved' : `${(targetBand - averageBand).toFixed(1)} to target`}
+            <span className="text-[10px] text-slate-500 mt-0.5 block">
+              {testsCompleted > 0 ? (averageBand >= targetBand ? 'Target Achieved' : `${(targetBand - averageBand).toFixed(1)} to target`) : 'No attempts yet'}
             </span>
           </div>
 
@@ -130,7 +143,7 @@ export default function StudentDashboard() {
               Best Score
             </span>
             <div className="text-2xl font-black text-emerald-600 font-display mt-1">
-              {bestScore.toFixed(1)}
+              {testsCompleted > 0 ? bestScore.toFixed(1) : '—'}
             </div>
             <span className="text-[10px] text-slate-500 mt-0.5 block">Highest Attempt</span>
           </div>
@@ -140,7 +153,7 @@ export default function StudentDashboard() {
               Latest Test
             </span>
             <div className="text-2xl font-black text-slate-900 font-display mt-1">
-              {latestScore.toFixed(1)}
+              {testsCompleted > 0 ? latestScore.toFixed(1) : '—'}
             </div>
             <span className="text-[10px] text-slate-500 mt-0.5 block">Most Recent</span>
           </div>
@@ -168,7 +181,7 @@ export default function StudentDashboard() {
                   <Headphones className="w-5 h-5" />
                 </div>
                 <span className="text-xl font-extrabold text-slate-900 font-display">
-                  {skillBands.listening.toFixed(1)}
+                  {testsCompleted > 0 && skillBands.listening > 0 ? skillBands.listening.toFixed(1) : '—'}
                 </span>
               </div>
               <div>
@@ -190,7 +203,7 @@ export default function StudentDashboard() {
                   <BookOpen className="w-5 h-5" />
                 </div>
                 <span className="text-xl font-extrabold text-slate-900 font-display">
-                  {skillBands.reading.toFixed(1)}
+                  {testsCompleted > 0 && skillBands.reading > 0 ? skillBands.reading.toFixed(1) : '—'}
                 </span>
               </div>
               <div>
@@ -212,7 +225,7 @@ export default function StudentDashboard() {
                   <PenTool className="w-5 h-5" />
                 </div>
                 <span className="text-xl font-extrabold text-slate-900 font-display">
-                  {skillBands.writing.toFixed(1)}
+                  {testsCompleted > 0 && skillBands.writing > 0 ? skillBands.writing.toFixed(1) : '—'}
                 </span>
               </div>
               <div>
@@ -234,7 +247,7 @@ export default function StudentDashboard() {
                   <Mic className="w-5 h-5" />
                 </div>
                 <span className="text-xl font-extrabold text-slate-900 font-display">
-                  {skillBands.speaking.toFixed(1)}
+                  {testsCompleted > 0 && skillBands.speaking > 0 ? skillBands.speaking.toFixed(1) : '—'}
                 </span>
               </div>
               <div>
@@ -276,7 +289,7 @@ export default function StudentDashboard() {
           </div>
 
           {/* SVG Progress Curve Chart */}
-          <div className="w-full h-48 bg-slate-50 rounded-xl border border-slate-200 p-4 relative flex items-end justify-between">
+          <div className="w-full h-48 bg-slate-50 rounded-xl border border-slate-200 p-4 relative flex items-center justify-center">
             {/* Horizontal Grid lines for Band 5, 6, 7, 8, 9 */}
             {[5, 6, 7, 8, 9].map((band) => (
               <div
@@ -294,31 +307,33 @@ export default function StudentDashboard() {
               style={{ bottom: `${((targetBand - 4) / 5) * 100}%` }}
             />
 
-            {/* Bars / Points representing recent attempts */}
-            <div className="flex items-end justify-around w-full h-full z-20 pt-6">
-              {(trendData.length > 0 ? trendData : [
-                { attemptIndex: 1, date: 'Initial', score: 6.0 },
-                { attemptIndex: 2, date: 'Test 2', score: 6.5 },
-                { attemptIndex: 3, date: 'Recent', score: 7.5 }
-              ]).map((pt, idx) => {
-                const heightPercent = Math.max(10, Math.min(100, ((pt.score - 4) / 5) * 100));
+            {/* Bars / Points representing real attempts */}
+            {trendData.length === 0 ? (
+              <div className="text-center text-xs text-slate-400 z-20 py-8">
+                No attempt data yet. Complete your first mock test to track your score trajectory!
+              </div>
+            ) : (
+              <div className="flex items-end justify-around w-full h-full z-20 pt-6">
+                {trendData.map((pt, idx) => {
+                  const heightPercent = Math.max(10, Math.min(100, ((pt.score - 4) / 5) * 100));
 
-                return (
-                  <div key={idx} className="flex flex-col items-center gap-2 group">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
-                      Band {pt.score.toFixed(1)}
+                  return (
+                    <div key={idx} className="flex flex-col items-center gap-2 group">
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm">
+                        Band {pt.score.toFixed(1)}
+                      </div>
+                      <div
+                        className="w-10 sm:w-14 bg-gradient-to-t from-megamind-600 to-megamind-400 rounded-t-lg shadow-sm group-hover:brightness-110 transition-all"
+                        style={{ height: `${heightPercent}%` }}
+                      />
+                      <span className="text-[10px] font-semibold text-slate-600">
+                        {pt.date}
+                      </span>
                     </div>
-                    <div
-                      className="w-10 sm:w-14 bg-gradient-to-t from-megamind-600 to-megamind-400 rounded-t-lg shadow-sm group-hover:brightness-110 transition-all"
-                      style={{ height: `${heightPercent}%` }}
-                    />
-                    <span className="text-[10px] font-semibold text-slate-600">
-                      {pt.date}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 
@@ -350,7 +365,7 @@ export default function StudentDashboard() {
                       <h4 className="text-xs font-bold text-slate-900">{att.test_title}</h4>
                     </div>
                     <p className="text-[11px] text-slate-400">
-                      Attempted on {new Date(att.created_at).toLocaleDateString()}
+                      Attempted on {new Date(att.started_at || Date.now()).toLocaleDateString()}
                     </p>
                   </div>
 

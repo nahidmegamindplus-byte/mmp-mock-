@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Header from '../components/common/Header';
 import Footer from '../components/common/Footer';
-import { Lock, Mail, ArrowRight, AlertCircle, Sparkles, User, ShieldCheck } from 'lucide-react';
+import { Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -32,12 +32,6 @@ export default function LoginPage() {
       setError(err.message || 'Invalid email or password. Please verify credentials.');
       setLoading(false);
     }
-  };
-
-  const handleFillDemo = (demoEmail, demoPass) => {
-    setEmail(demoEmail);
-    setPassword(demoPass);
-    setError(null);
   };
 
   return (
@@ -82,7 +76,7 @@ export default function LoginPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="student@megamindplus.com"
+                    placeholder="Enter your email address"
                     className="w-full pl-10 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-300 focus:border-megamind-500 focus:ring-1 focus:ring-megamind-500 bg-white"
                   />
                 </div>
@@ -121,39 +115,8 @@ export default function LoginPage() {
               </button>
             </form>
 
-            {/* Quick Demo Switcher */}
-            <div className="pt-4 border-t border-slate-100 space-y-2">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block text-center">
-                Instant Demo Logins
-              </span>
-
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <button
-                  type="button"
-                  onClick={() => handleFillDemo('student@megamindplus.com', 'student123')}
-                  className="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] font-semibold text-slate-700 transition-colors"
-                >
-                  Student
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleFillDemo('evaluator@megamindplus.com', 'teacher123')}
-                  className="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] font-semibold text-slate-700 transition-colors"
-                >
-                  Teacher
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleFillDemo('admin@megamindplus.com', 'admin123')}
-                  className="p-2 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-[11px] font-semibold text-slate-700 transition-colors"
-                >
-                  Admin
-                </button>
-              </div>
-            </div>
-
             {/* Register Link */}
-            <div className="text-center text-xs text-slate-500">
+            <div className="text-center text-xs text-slate-500 pt-2 border-t border-slate-100">
               Don't have an account yet?{' '}
               <Link to="/register" className="text-megamind-600 font-bold hover:underline">
                 Register as a Student

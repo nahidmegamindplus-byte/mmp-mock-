@@ -1,6 +1,6 @@
 import { initialUsers, initialSettings, initialTests, initialTestPayloads } from './mockData.js';
 
-const STORAGE_KEY = 'mmp_local_db_v1';
+const STORAGE_KEY = 'mmp_local_db_v2';
 
 // IELTS standard band tables
 const BAND_TABLES = {
@@ -122,79 +122,13 @@ function isAnswerCorrect(studentAns, correctAnsJson) {
 }
 
 function getInitialDb() {
-  const defaultAttempts = [
-    {
-      id: 'att_demo_01',
-      user_id: 'usr_student_01',
-      test_id: 'test_acad_01',
-      test_title: 'IELTS Academic Mock Test 01 - Full CBT Simulation',
-      test_type: 'academic',
-      status: 'evaluated',
-      current_section: 'speaking',
-      time_remaining_seconds: 0,
-      listening_raw_score: 34,
-      reading_raw_score: 32,
-      listening_band: 7.5,
-      reading_band: 7.0,
-      writing_band: 6.5,
-      speaking_band: 7.0,
-      overall_band: 7.0,
-      started_at: '2026-02-01T09:00:00.000Z',
-      submitted_at: '2026-02-01T11:45:00.000Z',
-      answers: {},
-      evaluations: [
-        {
-          section_type: 'writing',
-          evaluator_name: 'Dr. Sarah Jenkins',
-          overall_band: 6.5,
-          task_achievement_score: 7.0,
-          coherence_cohesion_score: 6.5,
-          lexical_resource_score: 6.5,
-          grammar_accuracy_score: 6.0,
-          examiner_feedback: 'Strong response to Task 1 with accurate data synthesis. Task 2 showed good argument balance but needs more cohesive linkers between body paragraphs.',
-          criteria_breakdown_json: JSON.stringify({
-            strengths: ['Clear Task 1 data overview', 'Natural academic vocabulary'],
-            weaknesses: ['Punctuation and run-on sentences in Task 2 body paragraph 2'],
-            recommendations: ['Focus on complex sentence structures and conditional forms']
-          })
-        },
-        {
-          section_type: 'speaking',
-          evaluator_name: 'Dr. Sarah Jenkins',
-          overall_band: 7.0,
-          fluency_coherence_score: 7.0,
-          lexical_resource_score: 7.0,
-          grammar_accuracy_score: 7.0,
-          pronunciation_score: 7.0,
-          examiner_feedback: 'Fluent and spontaneous responses throughout Part 1 and Part 2. Good intonation and varied sentence structures.',
-          criteria_breakdown_json: JSON.stringify({
-            strengths: ['Spontaneous delivery and great cue card time management', 'Clear pronunciation and intonation'],
-            weaknesses: ['Minor hesitation on abstract Part 3 questions'],
-            recommendations: ['Practice structuring abstract opinions with the P.E.E.L method']
-          })
-        }
-      ]
-    }
-  ];
-
   return {
     users: [...initialUsers],
     settings: { ...initialSettings },
     tests: [...initialTests],
     testPayloads: { ...initialTestPayloads },
-    attempts: defaultAttempts,
-    notifications: [
-      {
-        id: 'notif_01',
-        user_id: 'usr_student_01',
-        title: 'Evaluation Complete: IELTS Academic Mock Test 01',
-        message: 'Your Writing & Speaking responses have been evaluated by Dr. Sarah Jenkins. Overall Band: 7.0',
-        type: 'result',
-        link_url: '/result/att_demo_01',
-        is_read: false,
-        created_at: '2026-02-02T10:00:00.000Z'
-      }
-    ]
+    attempts: [],
+    notifications: []
   };
 }
 
@@ -207,7 +141,6 @@ function loadDb() {
       return initial;
     }
     const parsed = JSON.parse(raw);
-    // Ensure core users exist
     for (const u of initialUsers) {
       if (!parsed.users.some(x => x.email.toLowerCase() === u.email.toLowerCase())) {
         parsed.users.push(u);
@@ -241,7 +174,6 @@ function getCurrentUserFromToken(token) {
     const userId = token.replace(tokenPrefix, '');
     return db.users.find(u => u.id === userId) || null;
   }
-  // Try JWT decode if standard base64 payload
   try {
     const parts = token.split('.');
     if (parts.length === 3) {
@@ -271,7 +203,6 @@ export async function handleLocalApi(endpoint, options = {}) {
 
   const db = loadDb();
 
-  // Small latency simulation for natural UX
   await new Promise(r => setTimeout(r, 40));
 
   // 1. AUTH ROUTES
@@ -291,7 +222,7 @@ export async function handleLocalApi(endpoint, options = {}) {
     const localToken = `mmp_local_token_${user.id}`;
     const { password: _, ...userSafe } = user;
     return {
-      message: 'Login successful (Offline/Vercel Engine)',
+      message: 'Login successful',
       token: localToken,
       user: userSafe
     };
@@ -428,7 +359,7 @@ export async function handleLocalApi(endpoint, options = {}) {
     const test = db.tests.find(t => t.id === testId) || initialTests[0];
     const newAttempt = {
       id: `att_${Date.now()}`,
-      user_id: currentUser ? currentUser.id : 'usr_student_01',
+      user_id: currentUser ? currentUser.id : 'usr_guest',
       test_id: test.id,
       test_title: test.title,
       test_type: test.test_type,
@@ -482,7 +413,6 @@ export async function handleLocalApi(endpoint, options = {}) {
     att.status = 'submitted';
     att.submitted_at = new Date().toISOString();
 
-    // Grade Listening & Reading automatically against test questions
     const payload = db.testPayloads[att.test_id] || initialTestPayloads.test_acad_01;
     let lCorrect = 0;
     let rCorrect = 0;
@@ -506,42 +436,39 @@ export async function handleLocalApi(endpoint, options = {}) {
     att.reading_raw_score = rCorrect;
     att.listening_band = calculateBandScore(lCorrect, 'listening', att.test_type);
     att.reading_band = calculateBandScore(rCorrect, 'reading', att.test_type);
-
-    // Default provisional estimated writing/speaking bands for rich instant mock experience
     att.writing_band = 6.5;
-    att.speaking_band = 7.0;
+    att.speaking_band = 6.5;
     att.overall_band = calculateOverallBand([att.listening_band, att.reading_band, att.writing_band, att.speaking_band]);
 
-    // Create default teacher evaluation
     att.evaluations = [
       {
         section_type: 'writing',
-        evaluator_name: 'Dr. Sarah Jenkins',
+        evaluator_name: 'IELTS Senior Evaluator',
         overall_band: 6.5,
-        task_achievement_score: 7.0,
+        task_achievement_score: 6.5,
         coherence_cohesion_score: 6.5,
         lexical_resource_score: 6.5,
-        grammar_accuracy_score: 6.0,
-        examiner_feedback: 'Well-structured response with clear arguments. Good Task 1 data comparisons.',
+        grammar_accuracy_score: 6.5,
+        examiner_feedback: 'Structured response with appropriate arguments. Continue refining cohesive transition phrases.',
         criteria_breakdown_json: JSON.stringify({
-          strengths: ['Clear Task 1 data overview', 'Natural academic vocabulary'],
-          weaknesses: ['Minor punctuation lapses in Task 2 body'],
+          strengths: ['Relevant responses to all parts', 'Clear paragraphs'],
+          weaknesses: ['Minor sentence punctuation inconsistencies'],
           recommendations: ['Practice complex sentence connectors']
         })
       },
       {
         section_type: 'speaking',
-        evaluator_name: 'Dr. Sarah Jenkins',
-        overall_band: 7.0,
-        fluency_coherence_score: 7.0,
-        lexical_resource_score: 7.0,
-        grammar_accuracy_score: 7.0,
-        pronunciation_score: 7.0,
-        examiner_feedback: 'Confident and fluent delivery across all parts with natural intonation.',
+        evaluator_name: 'IELTS Senior Evaluator',
+        overall_band: 6.5,
+        fluency_coherence_score: 6.5,
+        lexical_resource_score: 6.5,
+        grammar_accuracy_score: 6.5,
+        pronunciation_score: 6.5,
+        examiner_feedback: 'Fluent and understandable delivery throughout all parts.',
         criteria_breakdown_json: JSON.stringify({
-          strengths: ['Fluent delivery and excellent cue card pacing'],
-          weaknesses: ['Minor pauses on abstract Part 3 questions'],
-          recommendations: ['Expand Part 3 hypothetical examples']
+          strengths: ['Clear spoken delivery'],
+          weaknesses: ['Slight hesitation during Part 3 discussion'],
+          recommendations: ['Expand arguments with detailed real-life illustrations']
         })
       }
     ];
@@ -558,13 +485,15 @@ export async function handleLocalApi(endpoint, options = {}) {
   if (resultMatch) {
     const attId = resultMatch[1];
     const att = db.attempts.find(a => a.id === attId) || db.attempts[0];
+    if (!att) throw new Error('Attempt not found');
     return { result: att };
   }
 
   const analysisMatch = path.match(/^\/attempts\/([^\/]+)\/analysis$/);
   if (analysisMatch) {
     const attId = analysisMatch[1];
-    const att = db.attempts.find(a => a.id === attId) || db.attempts[0];
+    const att = db.attempts.find(a => a.id === attId);
+    if (!att) throw new Error('Attempt not found');
     const payload = db.testPayloads[att.test_id] || initialTestPayloads.test_acad_01;
 
     const sectionsAnalysis = [];
@@ -608,8 +537,8 @@ export async function handleLocalApi(endpoint, options = {}) {
       sections: sectionsAnalysis,
       evaluations: att.evaluations || [],
       recommendations: [
-        'Review Part 3 true/false/not given strategies to improve scanning efficiency.',
-        'Practice note completion number and spelling drills for Listening Part 1.'
+        'Review True/False/Not Given strategies to improve scanning efficiency.',
+        'Practice note completion spelling and numerical accuracy drills.'
       ]
     };
   }
@@ -621,20 +550,22 @@ export async function handleLocalApi(endpoint, options = {}) {
 
   if (path === '/attempts/student-stats') {
     const myAttempts = db.attempts.filter(a => !currentUser || a.user_id === currentUser.id);
-    const avgOverall = myAttempts.length ? (myAttempts.reduce((s, a) => s + (a.overall_band || 0), 0) / myAttempts.length).toFixed(1) : 0;
-    const avgListen = myAttempts.length ? (myAttempts.reduce((s, a) => s + (a.listening_band || 0), 0) / myAttempts.length).toFixed(1) : 0;
-    const avgRead = myAttempts.length ? (myAttempts.reduce((s, a) => s + (a.reading_band || 0), 0) / myAttempts.length).toFixed(1) : 0;
-    const avgWrite = myAttempts.length ? (myAttempts.reduce((s, a) => s + (a.writing_band || 0), 0) / myAttempts.length).toFixed(1) : 0;
-    const avgSpeak = myAttempts.length ? (myAttempts.reduce((s, a) => s + (a.speaking_band || 0), 0) / myAttempts.length).toFixed(1) : 0;
+    const hasAttempts = myAttempts.length > 0;
+    const avgOverall = hasAttempts ? (myAttempts.reduce((s, a) => s + (a.overall_band || 0), 0) / myAttempts.length).toFixed(1) : '0.0';
+    const avgListen = hasAttempts ? (myAttempts.reduce((s, a) => s + (a.listening_band || 0), 0) / myAttempts.length).toFixed(1) : '0.0';
+    const avgRead = hasAttempts ? (myAttempts.reduce((s, a) => s + (a.reading_band || 0), 0) / myAttempts.length).toFixed(1) : '0.0';
+    const avgWrite = hasAttempts ? (myAttempts.reduce((s, a) => s + (a.writing_band || 0), 0) / myAttempts.length).toFixed(1) : '0.0';
+    const avgSpeak = hasAttempts ? (myAttempts.reduce((s, a) => s + (a.speaking_band || 0), 0) / myAttempts.length).toFixed(1) : '0.0';
+    const highest = hasAttempts ? myAttempts.reduce((max, a) => Math.max(max, a.overall_band || 0), 0) : 0;
     return {
       stats: {
         total_attempts: myAttempts.length,
-        avg_overall: parseFloat(avgOverall) || 7.0,
-        avg_listening: parseFloat(avgListen) || 7.5,
-        avg_reading: parseFloat(avgRead) || 7.0,
-        avg_writing: parseFloat(avgWrite) || 6.5,
-        avg_speaking: parseFloat(avgSpeak) || 7.0,
-        highest_band: myAttempts.reduce((max, a) => Math.max(max, a.overall_band || 0), 0) || 7.5
+        avg_overall: parseFloat(avgOverall),
+        avg_listening: parseFloat(avgListen),
+        avg_reading: parseFloat(avgRead),
+        avg_writing: parseFloat(avgWrite),
+        avg_speaking: parseFloat(avgSpeak),
+        highest_band: highest
       },
       recent_attempts: myAttempts.slice(0, 5)
     };
@@ -648,7 +579,7 @@ export async function handleLocalApi(endpoint, options = {}) {
         total_tests: db.tests.length,
         total_attempts: db.attempts.length,
         pending_evaluations: 0,
-        avg_overall_band: 7.1
+        avg_overall_band: db.attempts.length > 0 ? (db.attempts.reduce((s, a) => s + (a.overall_band || 0), 0) / db.attempts.length).toFixed(1) : 0
       },
       recent_attempts: db.attempts.slice(0, 5)
     };
@@ -699,6 +630,5 @@ export async function handleLocalApi(endpoint, options = {}) {
     return { attempts: db.attempts };
   }
 
-  // Default fallback for unhandled routes
-  return { success: true, message: 'Local operation completed' };
+  return { success: true, message: 'Operation completed' };
 }

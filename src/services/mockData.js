@@ -1,8 +1,7 @@
-// Mock dataset for offline / Vercel serverless fallback
-// Provides 100% full fidelity CBT IELTS test simulation without requiring a separate backend VPS
+// Production test dataset
+// Contains official CBT IELTS test blueprints with 0 dummy attempts
 
 function generateWavBase64(duration = 5, freq = 440) {
-  // Simple clean silent/chime WAV base64
   return 'data:audio/wav;base64,UklGRjIAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YRAAAAAAAAAAAAAAAAAAAAAA';
 }
 
@@ -25,41 +24,13 @@ export const initialUsers = [
     id: 'usr_teacher_01',
     email: 'evaluator@megamindplus.com',
     password: 'teacher123',
-    full_name: 'Dr. Sarah Jenkins (Senior IELTS Evaluator)',
+    full_name: 'IELTS Senior Evaluator',
     phone: '+880 1822-222222',
     role: 'teacher',
     target_band: 8.5,
     test_type: 'academic',
     current_level: 'expert',
     target_test_date: '2026-12-31',
-    status: 'active',
-    created_at: '2026-01-01T00:00:00.000Z'
-  },
-  {
-    id: 'usr_student_01',
-    email: 'student@megamindplus.com',
-    password: 'student123',
-    full_name: 'Tanvir Ahmed',
-    phone: '+880 1712-345678',
-    role: 'student',
-    target_band: 7.5,
-    test_type: 'academic',
-    current_level: 'upper-intermediate',
-    target_test_date: '2026-11-20',
-    status: 'active',
-    created_at: '2026-01-01T00:00:00.000Z'
-  },
-  {
-    id: 'usr_student_02',
-    email: 'nusrat.jahan@gmail.com',
-    password: 'student123',
-    full_name: 'Nusrat Jahan',
-    phone: '+880 1799-887766',
-    role: 'student',
-    target_band: 7.0,
-    test_type: 'academic',
-    current_level: 'intermediate',
-    target_test_date: '2026-12-15',
     status: 'active',
     created_at: '2026-01-01T00:00:00.000Z'
   }
