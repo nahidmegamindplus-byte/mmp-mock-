@@ -137,25 +137,25 @@ insertTest.run(
 const sec1Listen = 'sec_t1_listen';
 insertSection.run(sec1Listen, test1Id, 'listening', 'Listening Test', 'The Listening test consists of 4 parts with 10 questions each. You will hear each recording ONCE only. Answer all 40 questions.', 1, 30, 40);
 
-// Audio files for 4 parts
-insertAudio.run('aud_t1_p1', sec1Listen, 'Part 1: Accommodation Inquiry & Student Services', '/audio/listen_p1.wav', sampleAudio1, 360, 1, 'Receptionist: Good morning, City Accommodation Services. How can I help you? Student: Hello, I am calling to inquire about housing options near the campus...');
-insertAudio.run('aud_t1_p2', sec1Listen, 'Part 2: Local Community Center Facilities Guide', '/audio/listen_p2.wav', sampleAudio2, 380, 2, 'Speaker: Welcome everyone to the Riverside Leisure Center orientation. Today I will guide you through our newly renovated recreational facilities...');
-insertAudio.run('aud_t1_p3', sec1Listen, 'Part 3: Academic Tutorial on Sustainable Energy', '/audio/listen_p3.wav', sampleAudio3, 400, 3, 'Tutor: Good afternoon Sarah and Liam. Let us review your draft research proposal on solar battery grid integration...');
-insertAudio.run('aud_t1_p4', sec1Listen, 'Part 4: Lecture on Marine Ecosystem Restoration', '/audio/listen_p4.wav', sampleAudio4, 420, 4, 'Professor: In today’s environmental biology lecture, we will examine the historical decline and modern acoustic restoration techniques of coral reef biomes...');
+// Audio files for 4 parts with authentic Megamind URLs
+insertAudio.run('aud_t1_p1', sec1Listen, 'Part 1: University Clubs & Societies', 'https://portal.megamindplus.com/wp-content/uploads/2026/07/Test-1-Section-1.mp3', null, 360, 1, 'Part 1: University Clubs and Societies conversation.');
+insertAudio.run('aud_t1_p2', sec1Listen, 'Part 2: Halls of Residence', 'https://portal.megamindplus.com/wp-content/uploads/2026/07/Test-1-Section-2.mp3', null, 380, 2, 'Part 2: Features and Map of Halls of Residence.');
+insertAudio.run('aud_t1_p3', sec1Listen, "Part 3: Jenna & Marco's Project", 'https://portal.megamindplus.com/wp-content/uploads/2026/07/Test-1-Section-3.mp3', null, 400, 3, "Part 3: Discussion on Jenna and Marco's university project.");
+insertAudio.run('aud_t1_p4', sec1Listen, 'Part 4: News and the Media in the USA', 'https://portal.megamindplus.com/wp-content/uploads/2026/07/Test-1-Section-4.mp3', null, 420, 4, 'Part 4: Lecture on US news media, advertising and industry trends.');
 
-// 40 Listening Questions
-// Part 1 (1-10) Form & Note Completion
+// 40 Authentic Listening Questions
+// Part 1 (1-10) Table & Notes Completion
 const p1Questions = [
-  { q: 1, type: 'form_completion', prompt: 'Preferred accommodation type: [1]', ans: ['studio', 'studio apartment'], exp: 'The caller states she wants a quiet studio apartment.', opt: null },
-  { q: 2, type: 'form_completion', prompt: 'Maximum monthly budget: £ [2]', ans: ['650', '650 pounds'], exp: 'The student explicitly mentions her upper limit is 650 pounds.', opt: null },
-  { q: 3, type: 'form_completion', prompt: 'Desired move-in date: [3] September', ans: ['15th', '15', '15 September'], exp: 'She confirms her flight arrives on the 14th, so move-in is 15th.', opt: null },
-  { q: 4, type: 'form_completion', prompt: 'Distance from central library: within [4] minutes walk', ans: ['20', 'twenty'], exp: 'She requests a maximum 20-minute walking distance.', opt: null },
-  { q: 5, type: 'note_completion', prompt: 'Kitchen facilities must include an electric [5]', ans: ['cooker', 'stove', 'oven'], exp: 'She mentions needing an electric cooker in the kitchenette.', opt: null },
-  { q: 6, type: 'multiple_choice', prompt: 'Which utility bill is included in the rent?', ans: ['Water and Wi-Fi'], exp: 'The manager notes that water rates and broadband Wi-Fi are fully inclusive.', opt: ['Electricity only', 'Water and Wi-Fi', 'Gas heating only', 'Council tax'] },
-  { q: 7, type: 'multiple_choice', prompt: 'Where is the security deposit held?', ans: ['In a government protection scheme'], exp: 'Deposits are lodged in the national tenancy protection scheme.', opt: ['With the landlord directly', 'In a government protection scheme', 'At the university office', 'In a shared bank vault'] },
-  { q: 8, type: 'form_completion', prompt: 'Contact telephone number: 07700 [8]', ans: ['900452', '900 452'], exp: 'The student spells out the remaining digits 9-0-0-4-5-2.', opt: null },
-  { q: 9, type: 'form_completion', prompt: 'Emergency contact person: [9] (Uncle)', ans: ['Arthur Davies', 'Arthur', 'Davies'], exp: 'She gives her uncle’s full name as Arthur Davies.', opt: null },
-  { q: 10, type: 'short_answer', prompt: 'What identification document must be brought to the viewing?', ans: ['passport', 'student passport'], exp: 'The agent reminds her to bring her passport.', opt: null }
+  { q: 1, type: 'table_completion', prompt: 'Tuesday (climbing club) — extra activities: [1]', ans: ['weekend trips'], exp: 'Climbing club extra activities include weekend trips.', opt: null },
+  { q: 2, type: 'table_completion', prompt: 'Wednesday (chess club) — extra activities: [2]', ans: ['competitions'], exp: 'Chess club extra activities include competitions.', opt: null },
+  { q: 3, type: 'table_completion', prompt: 'Monday (film club) — current number of members: [3]', ans: ['125'], exp: 'Film club current member count is 125.', opt: null },
+  { q: 4, type: 'table_completion', prompt: 'Tuesday (climbing club) — contact: [4]', ans: ['club secretary'], exp: 'Contact person is the club secretary.', opt: null },
+  { q: 5, type: 'note_completion', prompt: 'Details of climbing club: meets [5]', ans: ['twice a month', 'twice per month'], exp: 'The club meets twice a month.', opt: null },
+  { q: 6, type: 'note_completion', prompt: 'Details of climbing club: excursion to France in the [6]', ans: ['spring'], exp: 'Annual excursion to France happens in the spring.', opt: null },
+  { q: 7, type: 'note_completion', prompt: 'Details of climbing club: subscriptions paid [7]', ans: ['weekly'], exp: 'Subscriptions are paid weekly.', opt: null },
+  { q: 8, type: 'note_completion', prompt: 'Benefits: discounts on [8]', ans: ['equipment'], exp: 'Members get discounts on equipment.', opt: null },
+  { q: 9, type: 'note_completion', prompt: 'Benefits: annual [9]', ans: ['magazine'], exp: 'Members receive an annual magazine.', opt: null },
+  { q: 10, type: 'note_completion', prompt: 'Benefits: free entrance to climbing [10] in Cardiff', ans: ['exhibition'], exp: 'Free entrance to climbing exhibition in Cardiff.', opt: null }
 ];
 
 p1Questions.forEach(item => {
@@ -168,7 +168,7 @@ p1Questions.forEach(item => {
     item.q,
     item.type,
     item.prompt,
-    'Complete the notes below. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.',
+    'Complete the table and notes below. Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.',
     item.opt ? JSON.stringify(item.opt) : null,
     JSON.stringify(item.ans),
     item.explanation,
@@ -178,18 +178,30 @@ p1Questions.forEach(item => {
   );
 });
 
-// Part 2 (11-20) Multiple Choice & Map Labelling
+// Part 2 (11-20) Features Matching & Map Labelling
+const p2FeaturesOptions = [
+  'A. cleaning included',
+  'B. all meals included',
+  'C. private showers',
+  'D. modern building',
+  'E. parking spaces',
+  'F. single sex',
+  'G. sports facilities'
+];
+
+const p2MapOptions = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+
 const p2Questions = [
-  { q: 11, type: 'multiple_choice', prompt: 'When was the community center originally founded?', ans: ['1984'], exp: 'The speaker states the original foundation stone was laid in 1984.', opt: ['1972', '1984', '1996', '2005'] },
-  { q: 12, type: 'multiple_choice', prompt: 'What is the newest facility added during the recent expansion?', ans: ['Hydrotherapy wellness pool'], exp: 'The hydrotherapy pool was opened last month as part of Phase 2.', opt: ['Olympic running track', 'Hydrotherapy wellness pool', 'Indoor climbing wall', 'Squash court annex'] },
-  { q: 13, type: 'multiple_choice', prompt: 'Junior membership is available for young people aged up to:', ans: ['17'], exp: 'Junior tier applies to everyone under 18 (up to 17 years).', opt: ['14', '16', '17', '19'] },
-  { q: 14, type: 'multiple_choice', prompt: 'Members receive free parking for a maximum duration of:', ans: ['3 hours'], exp: 'The parking gate ticket gives up to 3 complimentary hours.', opt: ['1 hour', '2 hours', '3 hours', 'All day'] },
-  { q: 15, type: 'matching', prompt: 'Gymnasium area on the site map is located at:', ans: ['Location B'], exp: 'Directly opposite the main reception foyer is Location B.', opt: ['Location A', 'Location B', 'Location C', 'Location D'] },
-  { q: 16, type: 'matching', prompt: 'Cafe and refreshment patio is located at:', ans: ['Location D'], exp: 'Overlooking the south gardens at Location D.', opt: ['Location A', 'Location B', 'Location C', 'Location D'] },
-  { q: 17, type: 'note_completion', prompt: 'Yoga classes are held every Tuesday at [17] am', ans: ['08:30', '8:30', '8.30'], exp: 'Morning yoga starts promptly at 8:30 am.', opt: null },
-  { q: 18, type: 'note_completion', prompt: 'Swimmers must wear a silicone [18] at all times.', ans: ['cap', 'swimming cap'], exp: 'Hygiene rules require a silicone swimming cap.', opt: null },
-  { q: 19, type: 'short_answer', prompt: 'What item must be placed in lockers for security?', ans: ['padlock', 'coin'], exp: 'Lockers require members to bring their own padlock.', opt: null },
-  { q: 20, type: 'multiple_choice', prompt: 'How can members book popular weekend sessions?', ans: ['Through the mobile app up to 7 days in advance'], exp: 'App bookings open 7 days beforehand at midnight.', opt: ['Only in person at the desk', 'Through the mobile app up to 7 days in advance', 'By sending a postal voucher', 'Phone calls on Friday morning only'] }
+  { q: 11, type: 'matching', prompt: 'Which features are available at Brown Hall?', ans: ['G'], exp: 'Brown Hall has sports facilities (G).', opt: p2FeaturesOptions },
+  { q: 12, type: 'matching', prompt: 'Which features are available at Blake Residence?', ans: ['F'], exp: 'Blake Residence is single sex (F).', opt: p2FeaturesOptions },
+  { q: 13, type: 'matching', prompt: 'Which features are available at Queens Building?', ans: ['C'], exp: 'Queens Building provides private showers (C).', opt: p2FeaturesOptions },
+  { q: 14, type: 'matching', prompt: 'Which features are available at Parkway Flats?', ans: ['B'], exp: 'Parkway Flats has all meals included (B).', opt: p2FeaturesOptions },
+  { q: 15, type: 'matching', prompt: 'Which features are available at Temple Rise?', ans: ['A'], exp: 'Temple Rise has cleaning included (A).', opt: p2FeaturesOptions },
+  { q: 16, type: 'map_label', prompt: 'Label the map: 16. Brown Hall', ans: ['B'], exp: 'Brown Hall is located at B on the map.', opt: p2MapOptions },
+  { q: 17, type: 'map_label', prompt: 'Label the map: 17. Blake Residence', ans: ['A'], exp: 'Blake Residence is located at A on the map.', opt: p2MapOptions },
+  { q: 18, type: 'map_label', prompt: 'Label the map: 18. Queens Building', ans: ['C'], exp: 'Queens Building is located at C on the map.', opt: p2MapOptions },
+  { q: 19, type: 'map_label', prompt: 'Label the map: 19. Parkway Flats', ans: ['E'], exp: 'Parkway Flats is located at E on the map.', opt: p2MapOptions },
+  { q: 20, type: 'map_label', prompt: 'Label the map: 20. Temple Rise', ans: ['D'], exp: 'Temple Rise is located at D on the map.', opt: p2MapOptions }
 ];
 
 p2Questions.forEach(item => {
@@ -202,7 +214,7 @@ p2Questions.forEach(item => {
     item.q,
     item.type,
     item.prompt,
-    'Choose the correct letter, A, B, C, or D, or write the appropriate word.',
+    item.q <= 15 ? 'Choose FIVE answers from the box and select the correct letter A-G.' : 'Label the map. Write the correct letter A-G next to Questions 16-20. Map image: https://portal.megamindplus.com/wp-content/uploads/2026/07/Screenshot_90.png',
     item.opt ? JSON.stringify(item.opt) : null,
     JSON.stringify(item.ans),
     item.explanation,
@@ -212,18 +224,18 @@ p2Questions.forEach(item => {
   );
 });
 
-// Part 3 (21-30) Discussion / Research Analysis
+// Part 3 (21-30) Sentences, Multi-select & MCQs
 const p3Questions = [
-  { q: 21, type: 'multiple_choice', prompt: 'Why did Sarah select microgrid resilience for her case study?', ans: ['It addresses real-world island energy blackouts'], exp: 'She explains that island grids face severe instability during monsoon seasons.', opt: ['It was the easiest topic available', 'It addresses real-world island energy blackouts', 'Her supervisor assigned it automatically', 'Funding was already guaranteed'] },
-  { q: 22, type: 'multiple_choice', prompt: 'What unexpected finding did Liam uncover in the primary data?', ans: ['Household solar battery degradation was faster than manufacturer claims'], exp: 'Liam highlights a 14% higher battery cell degradation rate.', opt: ['Energy demand dropped during winter', 'Household solar battery degradation was faster than manufacturer claims', 'Wind turbines were more popular than solar panels', 'Government subsidies were doubled'] },
-  { q: 23, type: 'multiple_choice', prompt: 'What advice does the tutor give regarding the literature review chapter?', ans: ['Synthesize themes rather than listing individual author papers'], exp: 'The tutor emphasizes thematic synthesis over chronological summaries.', opt: ['Shorten it to under 500 words', 'Synthesize themes rather than listing individual author papers', 'Exclude papers published before 2024', 'Add more personal opinions'] },
-  { q: 24, type: 'multiple_choice', prompt: 'Which statistical software do the students decide to use for regression analysis?', ans: ['R Studio'], exp: 'Both agree that R Studio offers superior open-source statistical packages.', opt: ['SPSS', 'Excel', 'R Studio', 'Matlab'] },
-  { q: 25, type: 'matching', prompt: 'Data Collection Phase responsibility:', ans: ['Shared equally by Liam and Sarah'], exp: 'Both will conduct survey interviews in parallel.', opt: ['Liam only', 'Sarah only', 'Shared equally by Liam and Sarah', 'External research assistant'] },
-  { q: 26, type: 'matching', prompt: 'Cost-Benefit Financial Modelling responsibility:', ans: ['Liam only'], exp: 'Liam has the background in financial engineering.', opt: ['Liam only', 'Sarah only', 'Shared equally by Liam and Sarah', 'External research assistant'] },
-  { q: 27, type: 'sentence_completion', prompt: 'The sample size will consist of [27] local business owners.', ans: ['120', 'one hundred and twenty'], exp: 'They target exactly 120 commercial survey respondents.', opt: null },
-  { q: 28, type: 'sentence_completion', prompt: 'All interview transcripts must be anonymized to protect participant [28]', ans: ['privacy', 'confidentiality'], exp: 'Ethics board rules mandate strict participant privacy.', opt: null },
-  { q: 29, type: 'sentence_completion', prompt: 'The final draft deadline is the end of [29]', ans: ['November', 'Nov'], exp: 'Submission is fixed for the final Friday of November.', opt: null },
-  { q: 30, type: 'multiple_choice', prompt: 'What will be the next immediate step before fieldwork starts?', ans: ['Obtain formal university ethics committee approval'], exp: 'Ethics clearance is required before any survey distribution.', opt: ['Print 500 paper survey copies', 'Obtain formal university ethics committee approval', 'Book international flights', 'Publish preliminary results on a blog'] }
+  { q: 21, type: 'sentence_completion', prompt: 'Jenna and Marco must complete their project by [21].', ans: ['March 25th', '25 March', 'March 25'], exp: 'The deadline is March 25th.', opt: null },
+  { q: 22, type: 'sentence_completion', prompt: 'The project will be a study of the increase in [22].', ans: ['older workers'], exp: 'The topic is the increase in older workers.', opt: null },
+  { q: 23, type: 'sentence_completion', prompt: 'The project will be assessed by [23].', ans: ['senior lecturer', 'a senior lecturer'], exp: 'Assessed by a senior lecturer.', opt: null },
+  { q: 24, type: 'sentence_completion', prompt: 'Jenna and Marco agree they need a [24] for the project.', ans: ['timetable'], exp: 'They agree on establishing a timetable.', opt: null },
+  { q: 25, type: 'multiple_select', prompt: 'What THREE things do Marco and Jenna have to do NOW for the project? (Choice 1)', ans: ['B'], exp: 'B. hand out questionnaires', opt: ['A. interview some people', 'B. hand out questionnaires', 'C. choose their subjects', 'D. take photographs', 'E. use statistical software', 'F. do some work in the library', 'G. contact some local companies'] },
+  { q: 26, type: 'multiple_select', prompt: 'What THREE things do Marco and Jenna have to do NOW for the project? (Choice 2)', ans: ['D'], exp: 'D. take photographs', opt: ['A. interview some people', 'B. hand out questionnaires', 'C. choose their subjects', 'D. take photographs', 'E. use statistical software', 'F. do some work in the library', 'G. contact some local companies'] },
+  { q: 27, type: 'multiple_select', prompt: 'What THREE things do Marco and Jenna have to do NOW for the project? (Choice 3)', ans: ['G'], exp: 'G. contact some local companies', opt: ['A. interview some people', 'B. hand out questionnaires', 'C. choose their subjects', 'D. take photographs', 'E. use statistical software', 'F. do some work in the library', 'G. contact some local companies'] },
+  { q: 28, type: 'multiple_choice', prompt: 'Why did Jenna and Marco agree to work together?', ans: ['B'], exp: 'B. because they each have different skills', opt: ['A. because they both wanted to work with someone else', 'B. because they each have different skills', 'C. because they have worked together before'] },
+  { q: 29, type: 'multiple_choice', prompt: 'Why does Marco suggest that he writes the analysis?', ans: ['C'], exp: 'C. He has more experience of this than Jenna.', opt: ['A. He needs more practice with this kind of writing.', 'B. He is better at English than Jenna.', 'C. He has more experience of this than Jenna.'] },
+  { q: 30, type: 'multiple_choice', prompt: 'Why does Jenna offer to do the presentation?', ans: ['A'], exp: 'A. Her tutor wants her to do the presentation.', opt: ['A. Her tutor wants her to do the presentation.', 'B. Marco is very nervous about giving presentations.', 'C. She wants to divide the work on the project fairly.'] }
 ];
 
 p3Questions.forEach(item => {
@@ -236,7 +248,7 @@ p3Questions.forEach(item => {
     item.q,
     item.type,
     item.prompt,
-    'Answer the questions by choosing the correct option or completing the sentence.',
+    item.q <= 24 ? 'Complete the sentences below. Write NO MORE THAN THREE WORDS AND/OR A NUMBER for each answer.' : item.q <= 27 ? 'Choose THREE letters, A-G.' : 'Choose the correct letter, A, B or C.',
     item.opt ? JSON.stringify(item.opt) : null,
     JSON.stringify(item.ans),
     item.explanation,
@@ -246,18 +258,20 @@ p3Questions.forEach(item => {
   );
 });
 
-// Part 4 (31-40) Academic Lecture
+// Part 4 (31-40) News Media in USA Matching & Summary Completion
+const p4MediaOptions = ['A', 'B', 'C'];
+
 const p4Questions = [
-  { q: 31, type: 'note_completion', prompt: 'Healthy coral reefs generate a distinct underwater [31] created by marine fauna.', ans: ['soundscape', 'noise', 'sound'], exp: 'The lecture highlights the biophonic soundscape produced by snapping shrimp and reef fish.', opt: null },
-  { q: 32, type: 'note_completion', prompt: 'Degraded bleached reefs are dangerously [32] to young fish larvae.', ans: ['silent', 'quiet'], exp: 'Larvae fail to locate dead reefs because they lack acoustic signatures.', opt: null },
-  { q: 33, type: 'note_completion', prompt: 'Researchers deployed underwater [33] to broadcast healthy sound recordings.', ans: ['loudspeakers', 'speakers', 'acoustic speakers'], exp: 'Solar-powered underwater loudspeakers were positioned around degraded patch reefs.', opt: null },
-  { q: 34, type: 'note_completion', prompt: 'Acoustic enrichment increased fish settlement rates by [34] percent.', ans: ['50', 'fifty'], exp: 'The published field data confirmed a 50% boost in larval recruitment.', opt: null },
-  { q: 35, type: 'note_completion', prompt: 'Grazing herbivores like [35] fish prevent suffocating algae blooms.', ans: ['parrotfish', 'parrot'], exp: 'Parrotfish are vital grazers that keep macroalgae in check.', opt: null },
-  { q: 36, type: 'note_completion', prompt: 'The study was conducted across the northern region of the Great [36] Reef.', ans: ['Barrier', 'Barrier Reef'], exp: 'Field trials took place on the northern Great Barrier Reef in Australia.', opt: null },
-  { q: 37, type: 'note_completion', prompt: 'Long-term monitoring showed a doubling in overall species [37]', ans: ['diversity', 'richness'], exp: 'Species diversity and richness doubled over the 18-month monitoring cycle.', opt: null },
-  { q: 38, type: 'note_completion', prompt: 'Acoustic playback must be paired with reductions in global carbon [38]', ans: ['emissions', 'emission'], exp: 'The professor cautions that sound alone cannot counter warming oceans without emissions cuts.', opt: null },
-  { q: 39, type: 'multiple_choice', prompt: 'What is the main limitation of acoustic restoration?', ans: ['It cannot protect corals against extreme marine heatwaves'], exp: 'Acoustics attracts fish but does not alter seawater temperature.', opt: ['Fish become deaf over time', 'It cannot protect corals against extreme marine heatwaves', 'It requires radioactive isotopes', 'The equipment is eaten by sharks'] },
-  { q: 40, type: 'note_completion', prompt: 'Future trials will integrate artificial [40] 3D structures with acoustic cues.', ans: ['reef', 'reefs', 'substrate'], exp: 'Future pilots combine 3D-printed ceramic artificial reef substrates with audio beacons.', opt: null }
+  { q: 31, type: 'matching', prompt: '31. It is more popular at the weekend than during the week.', ans: ['C'], exp: 'C (the press) is more popular at the weekend.', opt: p4MediaOptions },
+  { q: 32, type: 'matching', prompt: '32. It has affected the popularity of local radio.', ans: ['B'], exp: 'B (internet) affected local radio popularity.', opt: p4MediaOptions },
+  { q: 33, type: 'matching', prompt: '33. It has recently been able to expand internationally.', ans: ['C'], exp: 'C (the press) expanded internationally.', opt: p4MediaOptions },
+  { q: 34, type: 'matching', prompt: '34. It is offering more varied reporting than previously.', ans: ['A'], exp: 'A (television) offers more varied reporting.', opt: p4MediaOptions },
+  { q: 35, type: 'matching', prompt: '35. It has suffered from government intervention.', ans: ['A'], exp: 'A (television) suffered from government intervention.', opt: p4MediaOptions },
+  { q: 36, type: 'summary_completion', prompt: '...and their [36] now exceeds that of other industries.', ans: ['profit margin'], exp: 'Newspaper profit margin exceeds other industries.', opt: null },
+  { q: 37, type: 'summary_completion', prompt: 'Advertising has increased because of a good relationship with the [37] sector.', ans: ['retail'], exp: 'Relationship with the retail sector.', opt: null },
+  { q: 38, type: 'summary_completion', prompt: 'Newspapers now run more adverts which include [38].', ans: ['vouchers'], exp: 'Adverts including vouchers.', opt: null },
+  { q: 39, type: 'summary_completion', prompt: 'These have been found to raise readership of the papers and create more sales for the [39].', ans: ['clients'], exp: 'Create more sales for the clients.', opt: null },
+  { q: 40, type: 'summary_completion', prompt: 'There are also an increasing number of more expensive [40] adverts.', ans: ['full-page', 'full page'], exp: 'More expensive full-page adverts.', opt: null }
 ];
 
 p4Questions.forEach(item => {
@@ -270,7 +284,7 @@ p4Questions.forEach(item => {
     item.q,
     item.type,
     item.prompt,
-    'Complete the lecture notes below. Write NO MORE THAN TWO WORDS AND/OR A NUMBER for each answer.',
+    item.q <= 35 ? 'Choose the correct letter, A (television), B (internet), or C (the press).' : 'Complete the summary below. Write NO MORE THAN TWO WORDS for each answer.',
     item.opt ? JSON.stringify(item.opt) : null,
     JSON.stringify(item.ans),
     item.explanation,
